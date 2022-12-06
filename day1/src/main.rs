@@ -27,9 +27,24 @@ println!("{:?}", elves.iter().take(3).sum::<usize>());
 
  */
 fn main() {
-    let contents = fs::read_to_string("./input.txt").expect("Cant read file");
+    let contents = fs::read_to_string("./input.txt").expect("Cant read file"); // include_str!()
     let split = contents.split('\n');
     let tite = contents.split("\n\n");
+    // split ("\n\n") to have [
+    // "
+    //  1
+    //  2
+    //  3
+    //  4
+    // ",
+    // "
+    // 5
+    // 6
+    // 7
+    // "
+    // ]
+    // lines returns an iterator with element as each line
+    // flat_map( ) acts as a map(fn).flat() then sums
 
     println!("{:?}", tite);
 
