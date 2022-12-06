@@ -18,6 +18,10 @@ impl FromStr for Choice {
         }
     }
 }
+// could have done
+// map each line into (A, B)
+// pattern matched onto (A, B) => SCISSORS + DRAW and so on
+// https://github.com/gbegerow/advent-of-code/blob/main/aoc_2022_02/src/lib.rs
 
 fn main() {
     let input = include_str!("../input.txt");
