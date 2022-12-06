@@ -21,7 +21,11 @@ impl FromStr for Choice {
 
 fn main() {
     let input = include_str!("../input.txt");
+    part_one(&input);
+    part_two(&input);
+}
 
+fn part_one(input: &str) {
     let mut total_score = 0;
     for line in input.lines() {
         let split: Vec<&str> = line.trim_end().split(' ').collect();
@@ -37,8 +41,51 @@ fn main() {
             Choice::Scissors => total_score += 3,
         }
     }
-
     println!("{}", total_score);
+}
+
+fn part_two(input: &str) {
+    let mut total_score = 0;
+    for line in input.lines() {
+        let split: Vec<&str> = line.trim_end().split(' ').collect();
+
+        let opponent = Choice::from_str(split[0]).unwrap();
+        let player_input = split[1];
+
+        let (player_choice, points) = determine_required(&opponent, &player_input);
+        total_score += points;
+        match player_choice {
+            Choice::Rock => total_score += 1,
+            Choice::Paper => total_score += 2,
+            Choice::Scissors => total_score += 3,
+        }
+    }
+    println!("{}", total_score);
+}
+
+fn determine_required(opponent: &Choice, player_input: &str) -> (Choice, usize) {
+    if player_input == "X" {
+        // lose
+        match opponent {
+            Choice::Rock => (Choice::Scissors, 0),
+            Choice::Paper => (Choice::Rock, 0),
+            Choice::Scissors => (Choice::Paper, 0),
+        }
+    } else if player_input == "Y" {
+        // draw
+        match opponent {
+            Choice::Rock => (Choice::Rock, 3),
+            Choice::Paper => (Choice::Paper, 3),
+            Choice::Scissors => (Choice::Scissors, 3),
+        }
+    } else {
+        // win
+        match opponent {
+            Choice::Rock => (Choice::Paper, 6),
+            Choice::Paper => (Choice::Scissors, 6),
+            Choice::Scissors => (Choice::Rock, 6),
+        }
+    }
 }
 
 fn check_decision(opponent: &Choice, player: &Choice) -> usize {
