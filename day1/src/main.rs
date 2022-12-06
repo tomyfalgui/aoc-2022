@@ -1,8 +1,37 @@
 use std::fs;
 
+/*
+ *
+ *
+ *
+ *
+
+ // SMART SOLUTION
+ // https://www.reddit.com/r/rust/comments/z9w169/comment/iyjufd0/
+fn main() {
+
+let mut elves = include_str!("../../inputs/input01.txt")
+    .split("\n\n")
+    .map(|x| {
+        return x.lines().flat_map(str::parse::<usize>).sum();
+    })
+    .collect::<Vec<usize>>();
+
+elves.sort_by(|a,b| b.cmp(a));
+
+println!("{:?}", elves[0]);
+println!("{:?}", elves.iter().take(3).sum::<usize>());
+
+}
+
+
+ */
 fn main() {
     let contents = fs::read_to_string("./input.txt").expect("Cant read file");
     let split = contents.split('\n');
+    let tite = contents.split("\n\n");
+
+    println!("{:?}", tite);
 
     let mut values: Vec<i32> = Vec::new();
     let mut curr_value = 0;
