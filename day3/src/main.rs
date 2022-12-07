@@ -6,7 +6,33 @@ fn main() {
     part_two(input);
 }
 
-fn part_two(input: &str) {}
+fn part_two(input: &str) {
+    let split = input.split('\n').collect::<Vec<&str>>();
+    let chunked = split.chunks(3);
+    let mut total_priorities = 0;
+
+    for chunk in chunked {
+        if chunk.len() < 3 {
+            continue;
+        }
+        let first = chunk[0].to_string().chars().collect::<HashSet<_>>();
+        let second = chunk[1].to_string().chars().collect::<HashSet<_>>();
+        let third = chunk[2].chars().collect::<HashSet<_>>();
+
+        let first_second = first
+            .intersection(&second)
+            .copied()
+            .collect::<HashSet<char>>();
+        let mut final_intersection = first_second.intersection(&third);
+
+        if let Some(val) = final_intersection.next() {
+            let code_point = calculate_priority(val);
+            total_priorities += code_point;
+        }
+    }
+
+    println!("{}", total_priorities);
+}
 
 fn part_one(input: &str) {
     let mut total_priorities = 0;
