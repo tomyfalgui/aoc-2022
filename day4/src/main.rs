@@ -21,11 +21,14 @@ fn part_one(input: &str) -> usize {
                 .map(|x| x.parse().unwrap())
                 .collect::<Vec<usize>>();
 
-            let (mut a, mut b) = (split[0]..=split[1], split_two[0]..=split_two[1]);
+            let (a, b) = (split[0]..=split[1], split_two[0]..=split_two[1]);
             let a_copy = a.clone();
-            a.all(|z| b.contains(&z));
-            b.all(|z| a_copy.contains(&z));
-            if a.is_empty() || b.is_empty() {
+            let a_vec = a.collect::<Vec<usize>>().iter().all(|z| b.contains(&z));
+            let b_vec = b
+                .collect::<Vec<usize>>()
+                .iter()
+                .all(|z| a_copy.contains(&z));
+            if a_vec || b_vec {
                 Some(1)
             } else {
                 None
