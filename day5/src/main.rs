@@ -16,7 +16,7 @@ impl InstructionSet {
 }
 
 fn main() {
-    let input = include_str!("../input-test.txt");
+    let input = include_str!("../input.txt");
 
     let (mut stacks, instructions) = parse_input(input);
 
@@ -25,14 +25,24 @@ fn main() {
         let from_index = from - 1;
         let to_index = to - 1;
 
-        for _i in 0..count {
-            let from_vec = stacks.get_mut(from_index).unwrap();
-            let from_value = from_vec.pop().unwrap();
-            println!("{}", from_value);
+        let from_vec = stacks.get_mut(from_index).unwrap();
+        let mut taken_vec: Vec<_> = from_vec.drain(0..count).collect();
+        taken_vec.reverse();
 
-            let to_vec = stacks.get_mut(to_index).unwrap();
-            to_vec.push(from_value);
+        let to_vec = stacks.get_mut(to_index).unwrap();
+        for item in taken_vec {
+            to_vec.insert(0, item);
         }
+        // for _i in 0..count {
+        //     let from_vec = stacks.get_mut(from_index).unwrap();
+        //     //let from_value = from_vec.remove(0); part 1
+        //     // part 2
+        //     let from_value = from_vec.pop().unwrap();
+        //
+        //     let to_vec = stacks.get_mut(to_index).unwrap();
+        //     //to_vec.insert(0, from_value); part 1
+        //     to_vec.push(from_value);
+        // }
     }
 
     for stack in stacks {
