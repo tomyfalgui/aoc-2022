@@ -1,15 +1,15 @@
 use std::collections::HashMap;
-use std::thread;
 
 #[derive(Debug)]
 struct FileItem {
     size: u64,
+    level: u64,
     parent: Option<String>,
     children: Vec<String>,
 }
 
 fn main() {
-    let input = include_str!("../input-test.txt").trim();
+    let input = include_str!("../input.txt").trim();
 
     let root = parse_input(input);
     let mut directory_list = HashMap::new();
@@ -20,32 +20,37 @@ fn main() {
         }
     }
 
+    let mut root_vec: Vec<_> = root.iter().collect();
+    root_vec.sort_by(|(_a_key, a), (_b_key, b)| b.level.cmp(&a.level));
+
     let directories = get_directories(&root);
-    for dir in directories.clone() {
-        let dir_path = root.get(&dir).unwrap();
-        for child in &dir_path.children {
-            if directories.contains(&child) {
-                println!("{:?}", dir_path.children);
-                println!("{}", child);
+    for vec in root_vec {
+        if directories.contains(vec.0) {
+            let clone_dir = directory_list.clone();
+            let dir_size = clone_dir.get(vec.0);
+            if let Some(parent) = &vec.1.parent {
+                directory_list
+                    .entry(parent)
+                    .and_modify(|size| *size += dir_size.unwrap());
             }
         }
     }
 
-    for (key, value) in directory_list.iter() {
-        let mut total = value.to_owned();
-        for (key1, value1) in directory_list.iter() {
-            if key == key1 {
-                continue;
-            }
+    let dir_list_vec: Vec<_> = directory_list
+        .values()
+        .into_iter()
+        .map(|x| *x)
+        .filter(|x| *x < 100000)
+        .collect();
 
-            if value + value1 > 100000 {
-                println!("{total}");
-                break;
-            } else {
-                total += value1.to_owned();
-            }
-        }
+    println!("{:?}", dir_list_vec);
+
+    let mut sum = 0;
+    for v in &dir_list_vec {
+        sum += v;
     }
+
+    println!("{}", sum);
 }
 
 fn get_directories(file_list: &HashMap<String, FileItem>) -> Vec<String> {
@@ -81,6 +86,8 @@ fn parse_input(input: &str) -> HashMap<String, FileItem> {
 
     let mut current: String = "/".to_string();
     let mut path_history: Vec<String> = Vec::new();
+    let mut nest_level = 0;
+
     for line in input.lines() {
         let split_line: Vec<&str> = line.split(' ').collect();
 
@@ -91,10 +98,12 @@ fn parse_input(input: &str) -> HashMap<String, FileItem> {
             } else if to_dir == ".." {
                 if current != "/" {
                     current = path_history.pop().unwrap();
+                    nest_level -= 1;
                 }
             } else {
                 path_history.push(current.to_string());
                 current = to_dir.to_string();
+                nest_level += 1;
             }
         } else if split_line[0] != "$" {
             let child_name = split_line[1].to_string();
@@ -110,8 +119,8 @@ fn parse_input(input: &str) -> HashMap<String, FileItem> {
                 size: child_size,
                 parent: Some(current.clone()),
                 children: vec![],
+                level: nest_level + 1,
             });
-
             file_list
                 .entry(current.clone())
                 .and_modify(|fi| fi.children.push(child_name.to_string()))
@@ -119,6 +128,7 @@ fn parse_input(input: &str) -> HashMap<String, FileItem> {
                     size: child_size,
                     parent,
                     children: vec![child_name],
+                    level: nest_level,
                 });
         }
     }
