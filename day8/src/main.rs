@@ -28,54 +28,54 @@ fn main() {
 
     println!("There are {} visible trees", visible_trees);
 }
-fn get_all_down(tree_lines: &Vec<Vec<u64>>, tree_row: usize, tree_column: usize) -> bool {
+fn get_all_down(tree_lines: &Vec<Vec<u64>>, tree_row: usize, tree_column: usize) -> usize {
     let row_length = tree_lines.len();
 
-    let mut is_greater = true;
+    let mut trees = 0;
     for x in (tree_row + 1)..row_length {
         if tree_lines[x][tree_column] >= tree_lines[tree_row][tree_column] {
-            is_greater = false;
+            trees += 1;
             break;
         }
     }
 
-    is_greater
+    trees
 }
-fn get_all_right(tree_lines: &Vec<Vec<u64>>, tree_row: usize, tree_column: usize) -> bool {
+fn get_all_right(tree_lines: &Vec<Vec<u64>>, tree_row: usize, tree_column: usize) -> usize {
     let column_length = tree_lines[0].len();
 
-    let mut is_greater = true;
+    let mut trees = 0;
     for x in (tree_column + 1)..column_length {
         if tree_lines[tree_row][x] >= tree_lines[tree_row][tree_column] {
-            is_greater = false;
+            trees += 1;
             break;
         }
     }
 
-    is_greater
+    trees
 }
-fn get_all_left(tree_lines: &Vec<Vec<u64>>, tree_row: usize, tree_column: usize) -> bool {
-    let mut is_greater = true;
+fn get_all_left(tree_lines: &Vec<Vec<u64>>, tree_row: usize, tree_column: usize) -> usize {
+    let mut trees = 0;
     for x in (0..tree_column).rev() {
         if tree_lines[tree_row][x] >= tree_lines[tree_row][tree_column] {
-            is_greater = false;
+            trees += 1;
             break;
         }
     }
 
-    is_greater
+    trees
 }
 
-fn get_all_top(tree_lines: &Vec<Vec<u64>>, tree_row: usize, tree_column: usize) -> bool {
-    let mut is_greater = true;
+fn get_all_top(tree_lines: &Vec<Vec<u64>>, tree_row: usize, tree_column: usize) -> usize {
+    let mut trees = 0;
     for x in (0..tree_row).rev() {
         if tree_lines[x][tree_column] >= tree_lines[tree_row][tree_column] {
-            is_greater = false;
+            trees += 1;
             break;
         }
     }
 
-    is_greater
+    trees
 }
 
 fn parse_input(input: &str) -> Vec<Vec<u64>> {
