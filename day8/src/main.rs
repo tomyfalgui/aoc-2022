@@ -4,29 +4,43 @@ fn main() {
     let tree = parse_input(input);
     let tree_length = tree.len();
 
-    let mut visible_trees = 0;
+    let mut tree_product = 0;
+
     for (row, tree_line) in tree.iter().enumerate() {
         if row == 0 || row == (tree_length - 1) {
-            visible_trees += tree_line.len();
             continue;
         }
         let tree_line_length = tree_line.len();
         for (column, _curr_tree) in tree_line.iter().enumerate() {
             if column == 0 || column == (tree_line_length - 1) {
-                visible_trees += 1;
                 continue;
             }
-            if get_all_top(&tree, row, column)
-                || get_all_down(&tree, row, column)
-                || get_all_left(&tree, row, column)
-                || get_all_right(&tree, row, column)
-            {
-                visible_trees += 1;
+            let top = get_all_top(&tree, row, column);
+            let bottom = get_all_down(&tree, row, column);
+            let right = get_all_right(&tree, row, column);
+            let left = get_all_left(&tree, row, column);
+
+            println!(
+                r#"
+                     row {row}: column {column} of value {_curr_tree}
+
+                     has:
+                        top: {top}
+                        bottom: {bottom}
+                        right: {right}
+                        left: {left}
+
+                     "#
+            );
+
+            let new_prod = top * bottom * right * left;
+            if new_prod > tree_product {
+                tree_product = new_prod;
             }
         }
     }
 
-    println!("There are {} visible trees", visible_trees);
+    println!("Best product is {}", tree_product);
 }
 fn get_all_down(tree_lines: &Vec<Vec<u64>>, tree_row: usize, tree_column: usize) -> usize {
     let row_length = tree_lines.len();
@@ -36,6 +50,8 @@ fn get_all_down(tree_lines: &Vec<Vec<u64>>, tree_row: usize, tree_column: usize)
         if tree_lines[x][tree_column] >= tree_lines[tree_row][tree_column] {
             trees += 1;
             break;
+        } else {
+            trees += 1;
         }
     }
 
@@ -49,6 +65,8 @@ fn get_all_right(tree_lines: &Vec<Vec<u64>>, tree_row: usize, tree_column: usize
         if tree_lines[tree_row][x] >= tree_lines[tree_row][tree_column] {
             trees += 1;
             break;
+        } else {
+            trees += 1;
         }
     }
 
@@ -60,6 +78,8 @@ fn get_all_left(tree_lines: &Vec<Vec<u64>>, tree_row: usize, tree_column: usize)
         if tree_lines[tree_row][x] >= tree_lines[tree_row][tree_column] {
             trees += 1;
             break;
+        } else {
+            trees += 1;
         }
     }
 
@@ -72,6 +92,8 @@ fn get_all_top(tree_lines: &Vec<Vec<u64>>, tree_row: usize, tree_column: usize) 
         if tree_lines[x][tree_column] >= tree_lines[tree_row][tree_column] {
             trees += 1;
             break;
+        } else {
+            trees += 1;
         }
     }
 
