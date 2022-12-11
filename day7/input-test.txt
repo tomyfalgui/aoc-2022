@@ -7,6 +7,8 @@ dir d
 $ cd a
 $ ls
 dir e
+dir x
+dir z
 29116 f
 2557 g
 62596 h.lst
@@ -21,3 +23,11 @@ $ ls
 8033020 d.log
 5626152 d.ext
 7214296 k
+$ cd ..
+$ cd x
+$ ls
+1000 abc.ds
+$ cd ..
+$ cd z
+$ ls
+5000 asd.cd

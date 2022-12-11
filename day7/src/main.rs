@@ -36,21 +36,37 @@ fn main() {
         }
     }
 
-    let dir_list_vec: Vec<_> = directory_list
-        .values()
-        .into_iter()
-        .map(|x| *x)
-        .filter(|x| *x < 100000)
-        .collect();
-
-    println!("{:?}", dir_list_vec);
-
     let mut sum = 0;
-    for v in &dir_list_vec {
-        sum += v;
+    for (key, value) in directory_list {
+        if value < 100000 {
+            sum += value;
+            let a = root.get(key).unwrap();
+
+            println!("😜😜😜😜😜😜😜😜😜😜😜😜");
+            println!("{:?} {:?} {:?}", a.parent, a.level, a.children);
+            println!("{} - {}", key, value);
+            println!("😜😜😜😜😜😜😜😜😜😜😜😜");
+        }
     }
 
     println!("{}", sum);
+
+    //
+    // let dir_list_vec: Vec<_> = directory_list
+    //     .values()
+    //     .into_iter()
+    //     .map(|x| *x)
+    //     .filter(|x| *x < 100000)
+    //     .collect();
+    //
+    // println!("{:?}", dir_list_vec);
+    //
+    // let mut sum = 0;
+    // for v in &dir_list_vec {
+    //     sum += v;
+    // }
+    //
+    // println!("{}", sum);
 }
 
 fn get_directories(file_list: &HashMap<String, FileItem>) -> Vec<String> {
@@ -115,6 +131,7 @@ fn parse_input(input: &str) -> HashMap<String, FileItem> {
                 parent = Some(path_history[history_length - 1].clone());
             }
 
+            // need to account for similar child name
             file_list.entry(child_name.clone()).or_insert(FileItem {
                 size: child_size,
                 parent: Some(current.clone()),
