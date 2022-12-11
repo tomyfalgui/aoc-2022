@@ -9,7 +9,7 @@ struct FileItem {
 }
 
 fn main() {
-    let input = include_str!("../input.txt").trim();
+    let input = include_str!("../input-test.txt").trim();
 
     let root = parse_input(input);
     let mut directory_list = HashMap::new();
@@ -43,7 +43,7 @@ fn main() {
             let a = root.get(key).unwrap();
 
             println!("😜😜😜😜😜😜😜😜😜😜😜😜");
-            println!("{:?} {:?} {:?}", a.parent, a.level, a.children);
+            println!("{:?} {:?} {:?} ", a.parent, a.level, a.children);
             println!("{} - {}", key, value);
             println!("😜😜😜😜😜😜😜😜😜😜😜😜");
         }
@@ -109,8 +109,8 @@ fn parse_input(input: &str) -> HashMap<String, FileItem> {
 
         if split_line[0] == "$" && split_line[1] == "cd" {
             let to_dir = split_line[2];
-            if to_dir == current {
-                continue;
+            if to_dir == "/" {
+                current = "/".to_string();
             } else if to_dir == ".." {
                 if current != "/" {
                     current = path_history.pop().unwrap();
@@ -118,7 +118,7 @@ fn parse_input(input: &str) -> HashMap<String, FileItem> {
                 }
             } else {
                 path_history.push(current.to_string());
-                current = to_dir.to_string();
+                current = format!("{}{}/", current, to_dir).to_string();
                 nest_level += 1;
             }
         } else if split_line[0] != "$" {
@@ -131,16 +131,20 @@ fn parse_input(input: &str) -> HashMap<String, FileItem> {
                 parent = Some(path_history[history_length - 1].clone());
             }
 
-            // need to account for similar child name
-            file_list.entry(child_name.clone()).or_insert(FileItem {
-                size: child_size,
-                parent: Some(current.clone()),
-                children: vec![],
-                level: nest_level + 1,
-            });
+            file_list
+                .entry(format!("{}{}", current, child_name.clone()).to_string())
+                .or_insert(FileItem {
+                    size: child_size,
+                    parent: Some(current.clone()),
+                    children: vec![],
+                    level: nest_level + 1,
+                });
             file_list
                 .entry(current.clone())
-                .and_modify(|fi| fi.children.push(child_name.to_string()))
+                .and_modify(|fi| {
+                    fi.children
+                        .push(format!("{}{}", current, child_name.clone()).to_string())
+                })
                 .or_insert(FileItem {
                     size: child_size,
                     parent,
@@ -148,6 +152,8 @@ fn parse_input(input: &str) -> HashMap<String, FileItem> {
                     level: nest_level,
                 });
         }
+
+        println!("{:?}", path_history);
     }
 
     file_list
