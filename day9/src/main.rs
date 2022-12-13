@@ -63,19 +63,18 @@ fn part_two() {
                 } // /*    */                println!("{} moved: {:?} ", heads[tails_index], left[tails_index]);
             }
             while tails_index < 9 {
-                if tails_index == 0 {
-                    tails_index += 1;
-                }
                 let (left, right) = tails.split_at_mut(tails_index + 1);
 
-                match movement {
-                    "R" => left[tails_index] = (left[tails_index].0 + 1, left[tails_index].1),
-                    "L" => left[tails_index] = (left[tails_index].0 - 1, left[tails_index].1),
-                    "U" => left[tails_index] = (left[tails_index].0, left[tails_index].1 + 1),
-                    "D" => left[tails_index] = (left[tails_index].0, left[tails_index].1 - 1),
-                    _ => {
-                        continue 'outer;
-                    } // /*    */                println!("{} moved: {:?} ", heads[tails_index], left[tails_index]);
+                if tails_index != 0 {
+                    match movement {
+                        "R" => left[tails_index] = (left[tails_index].0 + 1, left[tails_index].1),
+                        "L" => left[tails_index] = (left[tails_index].0 - 1, left[tails_index].1),
+                        "U" => left[tails_index] = (left[tails_index].0, left[tails_index].1 + 1),
+                        "D" => left[tails_index] = (left[tails_index].0, left[tails_index].1 - 1),
+                        _ => {
+                            continue 'outer;
+                        } // /*    */                println!("{} moved: {:?} ", heads[tails_index], left[tails_index]);
+                    }
                 }
                 println!("{:?} {:?}", left, right);
 
