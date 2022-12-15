@@ -1,5 +1,5 @@
 fn main() {
-    let input = include_str!("input-test2.txt").trim();
+    let input = include_str!("../input.txt").trim();
 
     let mut cycles = 0;
     let mut register = 1;
@@ -24,8 +24,9 @@ fn main() {
 
         let mut current_cycles = 0;
         loop {
-            let mut parent_array_index: u64 = cycles / 40;
-            let real_index: u64 = cycles - (parent_array_index * 39) - parent_array_index;
+            let mut must_break = false;
+            let parent_array_index: i64 = cycles / 40;
+            let real_index: i64 = cycles - (parent_array_index * 39) - parent_array_index;
             if parent_array_index == 6 {
                 break;
             }
@@ -38,11 +39,16 @@ fn main() {
                 let inner = value.unwrap();
 
                 if current_cycles == 2 {
+                    register += inner;
                     must_break = true;
-                    pixels[parent_array_index as usize][real_index as usize] = '.';
-                } else if current_cycles == 1 || current_cycles == 0 {
-                    pixels[parent_array_index as usize][real_index as usize] = '#';
                 }
+            }
+
+            // check for out of bounds
+            if register + 2 > real_index && register - 2 < real_index {
+                pixels[parent_array_index as usize][real_index as usize] = '#';
+            } else {
+                pixels[parent_array_index as usize][real_index as usize] = '.';
             }
 
             if must_break {
