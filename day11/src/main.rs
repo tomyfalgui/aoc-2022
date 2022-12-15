@@ -1,17 +1,17 @@
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 enum Operator {
     Add,
     Multiply,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Operation {
     operator: Operator,
     value: u64,
     power: bool,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Monkey {
     items: Vec<u64>,
     operation: Operation,
@@ -44,9 +44,11 @@ impl Monkey {
         }
     }
 
-    fn test(&self, item: u64) -> u64 {
-        let result = self.operation.calculate(item);
+    fn calculate(&self, item: u64) -> u64 {
+        self.operation.calculate(item)
+    }
 
+    fn test(&self, result: u64) -> u64 {
         if result % self.test_by == 0 {
             self.monkey_true
         } else {
@@ -56,16 +58,42 @@ impl Monkey {
 }
 
 fn main() {
-    let input = include_str!("../test.txt").trim();
+    let input = include_str!("../input.txt").trim();
 
-    let monkeys = get_monkeys(input);
-    process_monkeys(monkeys);
+    let mut monkeys = get_monkeys(input);
+    let mut counters = process_monkeys(&mut monkeys);
+    counters.sort();
+    let counter_len = counters.len();
+
+    let get_product = &counters[counter_len - 2..];
+
+    println!("{:?}", get_product[0] * get_product[1]);
 }
 
-fn process_monkeys(monkeys: Vec<Monkey>) {
-    for monkey in monkeys.iter() {
-        println!("{:?}", monkey);
+fn get_gcf(monkeys: &Vec<Monkey>) -> u64 {
+    monkeys.iter().fold(1, |acc, m| m.test_by * acc)
+}
+fn process_monkeys(monkeys: &mut Vec<Monkey>) -> Vec<u64> {
+    let mut counter_item = vec![0; monkeys.len()];
+    let gcf = get_gcf(monkeys);
+
+    for _counter in 0..10_000 {
+        println!("Looping i: {}", _counter);
+        for i in 0..monkeys.len() {
+            let monkey = &mut monkeys[i].clone();
+            counter_item[i] += monkey.items.len() as u64;
+            for item in 0..monkey.items.len() {
+                let result = monkey.calculate(monkey.items[item]);
+                let result_div = result % gcf;
+                let pass_to = monkey.test(result_div);
+                monkeys[pass_to as usize].items.push(result_div);
+            }
+            monkey.items.clear();
+            monkeys[i] = monkey.clone();
+        }
     }
+
+    counter_item
 }
 
 fn get_monkeys(input: &str) -> Vec<Monkey> {
