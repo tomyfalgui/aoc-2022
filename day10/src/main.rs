@@ -32,7 +32,6 @@ fn main() {
             }
             if name == "noop" {
                 if current_cycles == 1 {
-                    pixels[parent_array_index as usize][real_index as usize] = '.';
                     must_break = true;
                 }
             } else if name == "addx" {
