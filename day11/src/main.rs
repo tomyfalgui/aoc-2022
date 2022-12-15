@@ -59,6 +59,7 @@ impl Monkey {
 
 fn main() {
     let input = include_str!("../input.txt").trim();
+    let now = std::time::Instant::now();
 
     let mut monkeys = get_monkeys(input);
     let mut counters = process_monkeys(&mut monkeys);
@@ -68,6 +69,7 @@ fn main() {
     let get_product = &counters[counter_len - 2..];
 
     println!("{:?}", get_product[0] * get_product[1]);
+    println!("elapsed: {}ms", now.elapsed().as_millis());
 }
 
 fn get_gcf(monkeys: &Vec<Monkey>) -> u64 {
@@ -77,8 +79,7 @@ fn process_monkeys(monkeys: &mut Vec<Monkey>) -> Vec<u64> {
     let mut counter_item = vec![0; monkeys.len()];
     let gcf = get_gcf(monkeys);
 
-    for _counter in 0..10_000 {
-        println!("Looping i: {}", _counter);
+    for _counter in 0..20 {
         for i in 0..monkeys.len() {
             let monkey = &mut monkeys[i].clone();
             counter_item[i] += monkey.items.len() as u64;
